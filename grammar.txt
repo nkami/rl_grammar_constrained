@@ -1,5 +1,11 @@
 S -> S S
 S -> A A
-A -> -1
-A -> 1
+S -> B B
+S -> C C
+S -> D D
+S -> E E
 A -> 0
+B -> 1
+C -> 2
+D -> 3
+E -> 4

@@ -164,14 +164,15 @@ def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, ac
     masked_q_values = tf.where(actions_mask, policy.q_values, q_values_mask)
 
     deterministic_actions = tf.argmax(masked_q_values, axis=1)
-
     possible_actions = tf.boolean_mask(tf.constant([action for action in range(0, n_actions)], dtype=tf.int64), actions_mask[0])
-
+    total_possible_actions = tf.Print(total_possible_actions, [total_possible_actions], "TESTTTTT")
     masked_random_actions = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=total_possible_actions, dtype=tf.int64)
     random_actions = tf.gather(possible_actions, masked_random_actions, batch_dims=0)
 
     chose_random = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=1, dtype=tf.float32) < eps
     stochastic_actions = tf.where(chose_random, random_actions, deterministic_actions)
+    
+    # stochastic_actions = deterministic_actions
 
     output_actions = tf.cond(stochastic_ph, lambda: stochastic_actions, lambda: deterministic_actions)
     update_eps_expr = eps.assign(tf.cond(update_eps_ph >= 0, lambda: update_eps_ph, lambda: eps))

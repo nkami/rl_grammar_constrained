@@ -28,8 +28,8 @@ class AllPassFilter(ActionFilter):
     All actions are always legal.
     """
     def __call__(self, num_actions):
-        print('filtered', num_actions)
-        print(len(self.past_actions))
+        # print('filtered', num_actions)
+        # print(len(self.past_actions))
         return [True for _ in range(0, num_actions)]
 
 
@@ -53,7 +53,8 @@ class GrammarFilter(ActionFilter):
             legal_actions.append(self.cyk_prefix.parse(string))
         #string = ' '.join(self.past_actions) + " " + str(args[0])
         #return self.cyk_prefix.parse(string)
-        print(len([k for k in legal_actions if k == True]))
+        # print(len([k for k in legal_actions if k == True]))
+        # print(len(self.past_actions))
         return legal_actions
 
     def add_action(self, action):
