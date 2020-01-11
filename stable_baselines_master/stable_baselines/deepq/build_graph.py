@@ -146,7 +146,8 @@ def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, ac
     n_actions = ac_space.nvec if isinstance(ac_space, MultiDiscrete) else ac_space.n
 
     if action_filter != None:
-        actions_mask = tf.map_fn(action_filter, tf.constant([action for action in range(0, n_actions)]), dtype=tf.bool)
+        #actions_mask = tf.map_fn(action_filter, tf.constant([action for action in range(0, n_actions)]), dtype=tf.bool)
+        actions_mask = tf.py_func(func=action_filter, inp=[tf.constant(n_actions)], Tout=[tf.bool for _ in range(0, n_actions)])
         total_possible_actions = tf.reduce_sum(tf.cast(actions_mask, dtype=tf.int32))
         total_possible_actions = sess.run(total_possible_actions)
         actions_mask = tf.reshape(tf.tile(actions_mask, [batch_size]), [batch_size, tf.shape(actions_mask)[0]])
