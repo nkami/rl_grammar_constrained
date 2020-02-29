@@ -1,29 +1,23 @@
 import gym
+import gym_minigrid
+from gym_minigrid.wrappers import *
+# from gym_random_rooms.envs.random_rooms_env import RandomRoomsEnv
 from stable_baselines_master.stable_baselines import DQN
-from stable_baselines_master.stable_baselines.common.vec_env import DummyVecEnv
-from stable_baselines_master.stable_baselines.deepq.policies import MlpPolicy
-from stable_baselines_master.stable_baselines.bench import Monitor
-from gym_four_rooms.envs.four_rooms_env import FourRoomsEnv
+#from stable_baselines import DQN
 from action_filters import GrammarFilter, AllPassFilter
 
 
 if __name__ == '__main__':
-    time_steps = 100000
+    time_steps = 500000
 
-    # env_name = 'MiniGrid-FourRooms-v0'
-    # env = gym.make(env_name)
-    # env = RGBImgPartialObsWrapper(env)
-    # env = ImgObsWrapper(env)
+    # env = gym.make('random_rooms-v0', max_steps=100, goal_visible_in_room=False, upsample=10)
+    env = gym.make('MiniGrid-Empty-16x16-v0')
+    env = ImgObsWrapper(env)
+    # env = RandomRoomsEnv(rows=100, cols=100, max_steps=500, goal_visible_in_room=False, upsample=1)
 
-    env = FourRoomsEnv()
-    env = Monitor(env, filename=None, allow_early_resets=True)
-    env = DummyVecEnv([lambda: env])
+    log_dir = "./log"
 
+    model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir, filter=GrammarFilter(history_size=100), NotOnExpo=False)
+    # model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir)
 
-    log_dir = "./log/"
-
-    model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir, filter=GrammarFilter())
-    model.learn(total_timesteps=time_steps, tb_log_name="Four Rooms: Grammar")
-    # model.learn(total_timesteps=time_steps)
-
-
+    model.learn(total_timesteps=time_steps, tb_log_name="Minigrid_SpecialGrammar_OnExp")
