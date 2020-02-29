@@ -35,11 +35,11 @@ class AllPassFilter(ActionFilter):
 
 class GrammarFilter(ActionFilter):
 
-    MAX_HISTORY = 2
-
-    def __init__(self):
+   def __init__(self, history_size=2):
         super().__init__()
-        self.cyk_prefix = Grammar("grammar.txt")
+        cfg2cnf.converter("grammar.txt")
+        self.cyk_prefix = Grammar("grammar_cnf.txt")
+        self.MAX_HISTORY = history_size
 
     def __call__(self, num_actions):
         """
