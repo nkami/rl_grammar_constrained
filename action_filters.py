@@ -1,5 +1,5 @@
 from cyk_prefix_parser.CYK_Paser import Grammar
-
+from cyk_prefix_parser import cfg2cnf
 
 class ActionFilter:
     """
