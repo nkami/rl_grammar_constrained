@@ -35,6 +35,7 @@ class AllPassFilter(ActionFilter):
 
 class GrammarFilter(ActionFilter):
 
+    
     def __init__(self, history_size=2):
         super().__init__()
         cfg2cnf.converter("grammar.txt")
