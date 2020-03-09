@@ -122,7 +122,7 @@ def default_param_noise_filter(var):
     return False
 
 
-def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=None, NotOnExpo=True): # NKAM
+def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=None, OnExpo=False): # NKAM
     """
     Creates the act function:
 
@@ -167,7 +167,7 @@ def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, ac
 
     possible_actions = tf.boolean_mask(tf.constant([action for action in range(0, n_actions)], dtype=tf.int64), actions_mask[0])
     masked_random_actions = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=total_possible_actions, dtype=tf.int64)
-    if NotOnExpo:
+    if not OnExpo:
         random_actions = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=n_actions, dtype=tf.int64)
     else:
         random_actions = tf.gather(possible_actions, masked_random_actions, batch_dims=0)
@@ -348,7 +348,7 @@ def build_act_with_param_noise(q_func, ob_space, ac_space, stochastic_ph, update
 
 def build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clipping=None,
                 gamma=1.0, double_q=True, scope="deepq", reuse=None,
-                param_noise=False, param_noise_filter_func=None, full_tensorboard_log=False, filter=None, NotOnExpo=True):
+                param_noise=False, param_noise_filter_func=None, full_tensorboard_log=False, filter=None, OnExpo=False):
     """
     Creates the train function:
 
@@ -391,7 +391,7 @@ def build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clipping=
             act_f, obs_phs = build_act_with_param_noise(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess,
                                                         param_noise_filter_func=param_noise_filter_func)
         else:
-            act_f, obs_phs = build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=filter, NotOnExpo=NotOnExpo) # NKAM
+            act_f, obs_phs = build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=filter, OnExpo=OnExpo) # NKAM
 
         # q network evaluation
         with tf.variable_scope("step_model", reuse=True, custom_getter=tf_util.outer_scope_getter("step_model")):
