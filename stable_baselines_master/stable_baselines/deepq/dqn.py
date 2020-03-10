@@ -61,8 +61,7 @@ class DQN(OffPolicyRLModel):
                  prioritized_replay_alpha=0.6, prioritized_replay_beta0=0.4, prioritized_replay_beta_iters=None,
                  prioritized_replay_eps=1e-6, param_noise=False,
                  n_cpu_tf_sess=None, verbose=0, tensorboard_log=None,
-                 _init_setup_model=True, policy_kwargs=None, full_tensorboard_log=False, seed=None,
-                 filter=None, NotOnExpo=True, threshold=None):
+                 _init_setup_model=True, policy_kwargs=None, full_tensorboard_log=False, seed=None, filter=None, grammar_on_exploration=False):
 
         # TODO: replay_buffer refactoring
         super(DQN, self).__init__(policy=policy, env=env, replay_buffer=None, verbose=verbose, policy_base=DQNPolicy,
@@ -89,8 +88,7 @@ class DQN(OffPolicyRLModel):
         self.double_q = double_q
 
         self.filter = filter  # NKAM
-        self.NotOnExpo = NotOnExpo
-        self.threshold = threshold
+        self.OnExpo = grammar_on_exploration
 
         self.graph = None
         self.sess = None
@@ -147,8 +145,7 @@ class DQN(OffPolicyRLModel):
                     full_tensorboard_log=self.full_tensorboard_log,
                     double_q=self.double_q,
                     filter=self.filter,
-                    NotOnExpo=self.NotOnExpo,
-                    threshold=self.threshold
+                    OnExpo=self.OnExpo
                 )
                 self.proba_step = self.step_model.proba_step
                 self.params = tf_util.get_trainable_vars("deepq")
