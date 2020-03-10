@@ -122,7 +122,7 @@ def default_param_noise_filter(var):
     return False
 
 
-def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=None, NotOnExpo=True): # NKAM
+def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=None, NotOnExpo=True, threshold=None): # NKAM
     """
     Creates the act function:
 
@@ -146,11 +146,17 @@ def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, ac
     n_actions = ac_space.nvec if isinstance(ac_space, MultiDiscrete) else ac_space.n
 
     if action_filter != None:
-        #actions_mask = tf.map_fn(action_filter, tf.constant([action for action in range(0, n_actions)]), dtype=tf.bool)
         actions_mask = tf.py_func(func=action_filter, inp=[tf.constant(n_actions)], Tout=[tf.bool for _ in range(0, n_actions)])
         total_possible_actions = tf.reduce_sum(tf.cast(actions_mask, dtype=tf.int64))
-        #total_possible_actions = sess.run(total_possible_actions)
         actions_mask = tf.reshape(tf.tile(actions_mask, [batch_size]), [batch_size, tf.shape(actions_mask)[0]])
+        if threshold != None:
+            legal_q_values = tf.boolean_mask(policy.q_values, actions_mask)
+            max_legal_q_value = tf.math.reduce_max(legal_q_values)
+            max_legal_q_value = tf.math.scalar_mul(threshold, max_legal_q_value)
+            threshold_tensor = tf.tile(tf.reshape(max_legal_q_value, (1,)), tf.constant(n_actions, dtype=tf.int64, shape=(1,)))
+            threshold_tensor = tf.reshape(tf.tile(threshold_tensor, [batch_size]), [batch_size, tf.shape(threshold_tensor)[0]])
+            threshold_mask = tf.math.greater(policy.q_values, threshold_tensor)
+            actions_mask = tf.math.logical_or(actions_mask, threshold_mask)
         # TODO: how to avoid getting stuck???
         # if actions_mask == "empty":
         #     actions_mask = None
@@ -348,7 +354,8 @@ def build_act_with_param_noise(q_func, ob_space, ac_space, stochastic_ph, update
 
 def build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clipping=None,
                 gamma=1.0, double_q=True, scope="deepq", reuse=None,
-                param_noise=False, param_noise_filter_func=None, full_tensorboard_log=False, filter=None, NotOnExpo=True):
+                param_noise=False, param_noise_filter_func=None, full_tensorboard_log=False,
+                filter=None, NotOnExpo=True, threshold=None):
     """
     Creates the train function:
 
@@ -391,7 +398,8 @@ def build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clipping=
             act_f, obs_phs = build_act_with_param_noise(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess,
                                                         param_noise_filter_func=param_noise_filter_func)
         else:
-            act_f, obs_phs = build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, action_filter=filter, NotOnExpo=NotOnExpo) # NKAM
+            act_f, obs_phs = build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess,
+                                       action_filter=filter, NotOnExpo=NotOnExpo, threshold=threshold) # NKAM
 
         # q network evaluation
         with tf.variable_scope("step_model", reuse=True, custom_getter=tf_util.outer_scope_getter("step_model")):

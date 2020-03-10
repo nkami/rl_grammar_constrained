@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir, filter=GrammarFilter(history_size=100), NotOnExpo=False)
     model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir, full_tensorboard_log=False,
-                filter=AllPassFilter(), NotOnExpo=False)
+                filter=AllPassFilter(), NotOnExpo=False, threshold=2)
     # model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_dir)
 
     model.learn(total_timesteps=time_steps, tb_log_name="test")
