@@ -1,4 +1,5 @@
-from cyk_prefix_parser.CYK_Paser import Grammar
+from cyk_prefix_parser import cyk_prefix_parser
+from cyk_prefix_parser import cyk_original_parser
 from cyk_prefix_parser import cfg2cnf
 
 class ActionFilter:
@@ -36,11 +37,15 @@ class AllPassFilter(ActionFilter):
 class GrammarFilter(ActionFilter):
 
     
-    def __init__(self, history_size=2):
+    def __init__(self, history_size=2, negate_grammar=False):
         super().__init__()
         cfg2cnf.converter("grammar.txt")
-        self.cyk_prefix = Grammar("grammar_cnf.txt")
+        if negate_grammar:
+            self.cyk = cyk_original_parser.Grammar("grammar_cnf.txt")
+        else:
+            self.cyk = cyk_prefix_parser.Grammar("grammar_cnf.txt")
         self.MAX_HISTORY = history_size
+        self.negate_grammar = negate_grammar
 
     def __call__(self, num_actions):
         """
@@ -51,12 +56,15 @@ class GrammarFilter(ActionFilter):
         legal_actions = []
         for action in range(0, num_actions):
             string = ' '.join(self.past_actions) + " " + str(action)
-            legal_actions.append(self.cyk_prefix.parse(string))
-        #string = ' '.join(self.past_actions) + " " + str(args[0])
-        #return self.cyk_prefix.parse(string)
-        # print(len([k for k in legal_actions if k == True]))
-        # print(len(self.past_actions))
-        return legal_actions
+            if self.negate_grammar:
+                legal_actions.append((not self.cyk.parse(string)))
+            else:
+                legal_actions.append(self.cyk.parse(string))
+        # avoiding all false actions
+        for action in legal_actions:
+            if action:
+                return legal_actions
+        return [True for action in range(0, num_actions)]
 
     def add_action(self, action):
         self.past_actions.append(str(action))

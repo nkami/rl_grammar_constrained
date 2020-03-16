@@ -2,12 +2,20 @@
 # IT's assumed that starting variable is the first typed
 import sys
 from cyk_prefix_parser import helper
+# import helper
 
 left, right = 0, 1
 
 K, V, Productions = [], [], []
+
+original_vaiableJar = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+                        "W", "X", "Y", "Z"]
+
 variablesJar = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
                 "W", "X", "Y", "Z"]
+
+emptyJar_index = 1
+
 
 
 def isUnitary(rule, variables):
@@ -21,11 +29,12 @@ def isSimple(rule):
         return True
     return False
 
-
-for nonTerminal in V:
-    if nonTerminal in variablesJar:
-        variablesJar.remove(nonTerminal)
-
+def EmptyCheck(variables):
+    global variablesJar, emptyJar_index
+    # print(variablesJar)
+    while len(variablesJar) == 0:
+        variablesJar = [(symbol + str(emptyJar_index)) for symbol in original_vaiableJar if (symbol + str(emptyJar_index)) not in variables and (symbol + str(emptyJar_index)) not in V]
+        emptyJar_index = emptyJar_index + 1
 
 # Add S0->S rule––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––START
 def START(productions, variables):
@@ -52,7 +61,7 @@ def TERM(productions, variables):
                         # Variables set it's updated adding new variable
                         V.append(dictionary[term])
                         newProductions.append((dictionary[term], [term]))
-
+                        EmptyCheck(variables)
                         production[right][index] = dictionary[term]
                     elif term == value:
                         production[right][index] = dictionary[term]
@@ -73,12 +82,19 @@ def BIN(productions, variables):
         else:
             newVar = variablesJar.pop(0)
             variables.append(newVar + '1')
+            EmptyCheck(variables)
             result.append((production[left], [production[right][0]] + [newVar + '1']))
             i = 1
             # TODO
             for i in range(1, k - 2):
                 var, var2 = newVar + str(i), newVar + str(i + 1)
+                assert var2 not in variables,"var2 already used"
                 variables.append(var2)
+                if var in variablesJar:
+                    variablesJar.remove(var)
+                if var2 in variablesJar:
+                    variablesJar.remove(var2)
+                EmptyCheck(variables)
                 result.append((var, [production[right][i], var2]))
             result.append((newVar + str(k - 2), production[right][k - 2:k]))
     return result
@@ -136,6 +152,14 @@ def UNIT(productions, variables):
 
 def converter(modelPath):
     k, v, productions = helper.loadModel(modelPath)
+    
+    for nonTerminal in v:
+        if nonTerminal in variablesJar:
+            variablesJar.remove(nonTerminal)
+    for nonTerminal in V:
+        if nonTerminal in variablesJar:
+            variablesJar.remove(nonTerminal)
+    EmptyCheck(variables=v)
 
     # productions = START(productions, variables=V)
     productions = TERM(productions, variables=v)
