@@ -1,11 +1,9 @@
-S -> S S
-S -> A A
-S -> B B
-S -> C C
-S -> D D
-S -> E E
-A -> 0
-B -> 1
-C -> 2
-D -> 3
-E -> 4
+Terminals:
+0 1 2 3 4 5
+Variables:
+S W P T
+Productions:
+S -> W P W T W | S S | P W T W | P T W;
+W -> 0 | 1 | 2 | 3 | W W;
+P -> 4 | P W P;
+T -> 5 | T W T

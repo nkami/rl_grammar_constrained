@@ -176,7 +176,8 @@ def build_act(q_func, ob_space, ac_space, stochastic_ph, update_eps_ph, sess, ac
     if not OnExpo:
         random_actions = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=n_actions, dtype=tf.int64)
     else:
-        random_actions = tf.gather(possible_actions, masked_random_actions, batch_dims=0)
+        random_actions = tf.gather(possible_actions, masked_random_actions)
+        # random_actions = tf.gather(possible_actions, masked_random_actions, batch_dims=0)
 
     chose_random = tf.random_uniform(tf.stack([batch_size]), minval=0, maxval=1, dtype=tf.float32) < eps
     stochastic_actions = tf.where(chose_random, random_actions, deterministic_actions)

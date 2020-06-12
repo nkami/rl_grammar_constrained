@@ -37,9 +37,9 @@ class AllPassFilter(ActionFilter):
 class GrammarFilter(ActionFilter):
 
     
-    def __init__(self, history_size=2, negate_grammar=False):
+    def __init__(self, history_size=2, negate_grammar=False, grammar_file="grammar.txt"):
         super().__init__()
-        cfg2cnf.converter("grammar.txt")
+        cfg2cnf.converter(grammar_file)
         if negate_grammar:
             self.cyk = cyk_original_parser.Grammar("grammar_cnf.txt")
         else:
