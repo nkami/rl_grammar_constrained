@@ -77,9 +77,10 @@ class StateMachineGrammarFilter(ActionFilter):
     def __init__(self, history_size=2, env=None):
         super().__init__()
 
-        self.state = int(env.get_pseudo_state())
+        self.env = env
+        self.state = int(self.env.get_pseudo_state())
         self.grammar_file = "grammar_state" + str(self.state) + ".txt"
-        cfg2cnf.converter(grammar_file)
+        cfg2cnf.converter(self.grammar_file)
         self.cyk = cyk_prefix_parser.Grammar("grammar_cnf.txt")
 
         self.MAX_HISTORY = history_size
@@ -93,10 +94,7 @@ class StateMachineGrammarFilter(ActionFilter):
         legal_actions = []
         for action in range(0, num_actions):
             string = ' '.join(self.past_actions) + " " + str(action)
-            if self.negate_grammar:
-                legal_actions.append((not self.cyk.parse(string)))
-            else:
-                legal_actions.append(self.cyk.parse(string))
+            legal_actions.append(self.cyk.parse(string))
         # avoiding all false actions
         for action in legal_actions:
             if action:
@@ -108,9 +106,10 @@ class StateMachineGrammarFilter(ActionFilter):
         if len(self.past_actions) >= self.MAX_HISTORY:
             self.reset_past()
 
-        new_state = int(env.get_pseudo_state())
+        new_state = int(self.env.get_pseudo_state())
         if new_state != self.state:
             self.state = new_state
             self.grammar_file = "grammar_state" + str(self.state) + ".txt"
-            cfg2cnf.converter(grammar_file)
+            cfg2cnf.converter(self.grammar_file)
             self.cyk = cyk_prefix_parser.Grammar("grammar_cnf.txt")
+            self.reset_past()
