@@ -1,9 +1,12 @@
 Terminals:
-0 1 2 3 4 5
+0 1 2 3 4 5 6 7 8
 Variables:
-S W P T
+S T R A B C D
 Productions:
-S -> W P W T W | S S | P W T W | P T W;
-W -> 0 | 1 | 2 | 3 | W W;
-P -> 4 | P W P;
-T -> 5 | T W T
+S -> 0 | 1 | 2 | 3 | 4 | S S | T S;
+T -> A R B R C R D;
+A -> 5;
+B -> 6;
+C -> 7;
+D -> 8;
+R -> 3

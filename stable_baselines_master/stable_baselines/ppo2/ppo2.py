@@ -53,7 +53,7 @@ class PPO2(ActorCriticRLModel):
     def __init__(self, policy, env, gamma=0.99, n_steps=128, ent_coef=0.01, learning_rate=2.5e-4, vf_coef=0.5,
                  max_grad_norm=0.5, lam=0.95, nminibatches=4, noptepochs=4, cliprange=0.2, cliprange_vf=None,
                  verbose=0, tensorboard_log=None, _init_setup_model=True, policy_kwargs=None,
-                 full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None):
+                 full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None, filter=None, grammar_penalty=0):
 
         super(PPO2, self).__init__(policy=policy, env=env, verbose=verbose, requires_vec_env=True,
                                    _init_setup_model=_init_setup_model, policy_kwargs=policy_kwargs,
@@ -100,8 +100,14 @@ class PPO2(ActorCriticRLModel):
         self.summary = None
         self.episode_reward = None
 
+        #NIBA
+        self.filter = filter
+        self.grammar_penalty = grammar_penalty
+        #NIBA
+
         if _init_setup_model:
             self.setup_model()
+
 
     def _get_pretrain_placeholders(self):
         policy = self.act_model
@@ -316,7 +322,11 @@ class PPO2(ActorCriticRLModel):
                 as writer:
             self._setup_learn()
 
-            runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam)
+            # runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam)
+            #NIBA
+            runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam, filter=self.filter, grammar_penalty=self.grammar_penalty)
+            #NIBA
+            
             self.episode_reward = np.zeros((self.n_envs,))
 
             ep_info_buf = deque(maxlen=100)
@@ -432,7 +442,7 @@ class PPO2(ActorCriticRLModel):
 
 
 class Runner(AbstractEnvRunner):
-    def __init__(self, *, env, model, n_steps, gamma, lam):
+    def __init__(self, *, env, model, n_steps, gamma, lam, filter=None, grammar_penalty=0):
         """
         A runner to learn the policy of an environment for a model
 
@@ -445,6 +455,11 @@ class Runner(AbstractEnvRunner):
         super().__init__(env=env, model=model, n_steps=n_steps)
         self.lam = lam
         self.gamma = gamma
+
+        # NIBA
+        self.filter = filter
+        self.grammar_penalty = grammar_penalty
+        # NIBA
 
     def run(self):
         """
@@ -476,6 +491,17 @@ class Runner(AbstractEnvRunner):
             if isinstance(self.env.action_space, gym.spaces.Box):
                 clipped_actions = np.clip(actions, self.env.action_space.low, self.env.action_space.high)
             self.obs[:], rewards, self.dones, infos = self.env.step(clipped_actions)
+            
+            #NIBA
+            if(self.filter is not None):
+                if not self.filter.add_action(clipped_actions[0]):
+                    # print("PENALTY!")
+                    rewards[0] -= self.grammar_penalty
+                    self.filter.reset_past()
+            # print("!!!!!! ACTIONS:    " + str(clipped_actions))
+            # print("!!!!!! REWARDS:    " + str(rewards))
+            #NIBA
+
             for info in infos:
                 maybe_ep_info = info.get('episode')
                 if maybe_ep_info is not None:
