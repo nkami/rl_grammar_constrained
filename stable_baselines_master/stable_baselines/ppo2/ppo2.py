@@ -53,12 +53,12 @@ class PPO2(ActorCriticRLModel):
     def __init__(self, policy, env, gamma=0.99, n_steps=128, ent_coef=0.01, learning_rate=2.5e-4, vf_coef=0.5,
                  max_grad_norm=0.5, lam=0.95, nminibatches=4, noptepochs=4, cliprange=0.2, cliprange_vf=None,
                  verbose=0, tensorboard_log=None, _init_setup_model=True, policy_kwargs=None,
-                 full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None, filter=None, grammar_penalty=0):
+                 full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None, filter=None): #NKAM
 
         super(PPO2, self).__init__(policy=policy, env=env, verbose=verbose, requires_vec_env=True,
                                    _init_setup_model=_init_setup_model, policy_kwargs=policy_kwargs,
                                    seed=seed, n_cpu_tf_sess=n_cpu_tf_sess)
-
+        print('custom ppo!!!!!!!!!')
         self.learning_rate = learning_rate
         self.cliprange = cliprange
         self.cliprange_vf = cliprange_vf
@@ -102,7 +102,7 @@ class PPO2(ActorCriticRLModel):
 
         #NIBA
         self.filter = filter
-        self.grammar_penalty = grammar_penalty
+        #self.grammar_penalty = grammar_penalty
         #NIBA
 
         if _init_setup_model:
@@ -137,7 +137,7 @@ class PPO2(ActorCriticRLModel):
                     n_batch_train = self.n_batch // self.nminibatches
 
                 act_model = self.policy(self.sess, self.observation_space, self.action_space, self.n_envs, 1,
-                                        n_batch_step, reuse=False, **self.policy_kwargs)
+                                        n_batch_step, reuse=False, action_filter=self.filter, **self.policy_kwargs) #NKAM
                 with tf.variable_scope("train_model", reuse=True,
                                        custom_getter=tf_util.outer_scope_getter("train_model")):
                     train_model = self.policy(self.sess, self.observation_space, self.action_space,
@@ -322,9 +322,9 @@ class PPO2(ActorCriticRLModel):
                 as writer:
             self._setup_learn()
 
-            # runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam)
+            #runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam)
             #NIBA
-            runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam, filter=self.filter, grammar_penalty=self.grammar_penalty)
+            runner = Runner(env=self.env, model=self, n_steps=self.n_steps, gamma=self.gamma, lam=self.lam, filter=self.filter)
             #NIBA
             
             self.episode_reward = np.zeros((self.n_envs,))
@@ -442,7 +442,7 @@ class PPO2(ActorCriticRLModel):
 
 
 class Runner(AbstractEnvRunner):
-    def __init__(self, *, env, model, n_steps, gamma, lam, filter=None, grammar_penalty=0):
+    def __init__(self, *, env, model, n_steps, gamma, lam, filter=None):
         """
         A runner to learn the policy of an environment for a model
 
@@ -458,7 +458,7 @@ class Runner(AbstractEnvRunner):
 
         # NIBA
         self.filter = filter
-        self.grammar_penalty = grammar_penalty
+        #self.grammar_penalty = grammar_penalty
         # NIBA
 
     def run(self):
@@ -493,11 +493,17 @@ class Runner(AbstractEnvRunner):
             self.obs[:], rewards, self.dones, infos = self.env.step(clipped_actions)
             
             #NIBA
-            if(self.filter is not None):
-                if not self.filter.add_action(clipped_actions[0]):
-                    # print("PENALTY!")
-                    rewards[0] -= self.grammar_penalty
-                    self.filter.reset_past()
+            if self.filter is not None:
+                #possible = self.filter(self.env.action_space.n)
+                #if not possible[clipped_actions[0]]:
+                #    print('not legal: chose ' + str(clipped_actions[0]))
+                #else:
+                #    print('chose ' + str(clipped_actions[0])) 
+                self.filter.add_action(clipped_actions[0])
+            #    if not self.filter.add_action(clipped_actions[0]):
+            #        # print("PENALTY!")
+            #        rewards[0] -= self.grammar_penalty
+            #        self.filter.reset_past()
             # print("!!!!!! ACTIONS:    " + str(clipped_actions))
             # print("!!!!!! REWARDS:    " + str(rewards))
             #NIBA

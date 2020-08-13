@@ -1,63 +1,35 @@
-import gym
-import gym_minigrid
 import os
-from gym_minigrid.wrappers import *
-import tensorflow as tf
+import matplotlib.pyplot as plt
+import gym
+import gym_random_rooms
 
-#from stable_baselines_master.stable_baselines import DQN
-#from stable_baselines_master.stable_baselines.bench import Monitor
-#from stable_baselines_master.stable_baselines.deepq.policies import FeedForwardPolicy
-#from stable_baselines_master.stable_baselines.a2c.utils import conv, linear, conv_to_fc, lstm
-
-from stable_baselines.a2c.utils import conv, linear, conv_to_fc, lstm
-from stable_baselines.deepq.policies import FeedForwardPolicy
-from stable_baselines import DQN
-from stable_baselines.bench import Monitor
-
-from action_filters import GrammarFilter, AllPassFilter
-
-
-def custom_cnn(scaled_images, **kwargs):
-    """
-    CNN from Nature paper.
-    :param scaled_images: (TensorFlow Tensor) Image input placeholder
-    :param kwargs: (dict) Extra keywords parameters for the convolutional layers of the CNN
-    :return: (TensorFlow Tensor) The CNN output layer
-    """
-    activ = tf.nn.relu
-    layer_1 = activ(conv(scaled_images, 'c1', n_filters=128, filter_size=8, stride=2, init_scale=np.sqrt(2), **kwargs))
-    layer_2 = activ(conv(layer_1, 'c2', n_filters=64, filter_size=4, stride=2, init_scale=np.sqrt(2), **kwargs))
-    layer_3 = activ(conv(layer_2, 'c3', n_filters=64, filter_size=3, stride=1, init_scale=np.sqrt(2), **kwargs))
-    layer_3 = conv_to_fc(layer_3)
-    return activ(linear(layer_3, 'fc1', n_hidden=512, init_scale=np.sqrt(2)))
-
-
-# Custom Mlp/Cnn policy
-class CustomDQNPolicy(FeedForwardPolicy):
-    def __init__(self, *args, **kwargs):
-        super(CustomDQNPolicy, self).__init__(*args, **kwargs, layer_norm=False, feature_extraction="cnn", cnn_extractor=custom_cnn)
-        #super(CustomDQNPolicy, self).__init__(*args, **kwargs, layers=[4096, 4096, 4096], layer_norm=False, feature_extraction="mlp")
+from stable_baselines import PPO2, DQN
+from action_filters import AllPassFilter, GrammarFilter
 
 
 if __name__ == '__main__':
-    time_steps = 600000
-
-    # env = gym.make('random_rooms-v0', max_steps=100, goal_visible_in_room=False, upsample=10)
-    env = gym.make('MiniGrid-MultiRoom-N2-S4-v0')
-    env = ImgObsWrapper(FullyObsWrapper(ReseedWrapper(env, seeds=list(range(15)))))
-    #def checkpoints(episode_id):
-    #    episodes = [1, 200, 500, 1000, 5000, 10000, 20000, 30000, 100000, 300000, 500000]
-    #    return episode_id in episodes
-    #env = gym.wrappers.Monitor(env, "./videos/Grammar/NotOnExploration/1/", video_callable=checkpoints, force=True)
-    #env = gym.wrappers.Monitor(env, "./videos/SB/3/", video_callable=checkpoints, force=True)
-
-    log_dir = "./log4/"
+    time_steps = 200000
+    print('eeeeeeeeeeeeeeeeeee')
+    env = gym.make('random_rooms-v0', max_steps=100, rows=8, cols=14, upsample=4, key_reward=0.1, door_reward=0.1, doors_num=5, same_places=True, bundle_doors=True, master_key=True, n_inner_resets=1, inner_counter_in_state=False, seed=8)
 
 
-    #model = DQN('CnnPolicy', env, verbose=1, tensorboard_log=log_dir, filter=GrammarFilter(history_size=40, negate_grammar=False), grammar_on_exploration=True)  
-    model = DQN(CustomDQNPolicy, env, verbose=1, tensorboard_log=log_dir)
+    log_dir = "./log/"
+    log_name = "DoorKey_rows8_cols14_steps100_keydoorreward01_doors5_sameplaces_entcoef_005_chginitialstate_masterkey_GrammarHistory30_PPO2_"
+    #log_name = "DoorKey_rows8_cols14_steps100_keydoorreward01_doors5_sameplaces_entcoef_005_chginitialstate_masterkey_AllPass_PPO2_"
 
+    def checkpoints(episode_id):
+        return episode_id % 50 == 0
 
-    #model.learn(total_timesteps=time_steps, tb_log_name="Minigrid_MultiN2_seed48_tile2_Cnn_GrammarHistory40_io_OnExploration")
-    model.learn(total_timesteps=time_steps, tb_log_name="Minigrid_MultiN2_seed15_Cnn_128stride2x64x64x512")
+    
+    for _ in range(1):
+        prev_runs = [0] + [int(dir.split('_')[-1]) for dir in os.listdir(log_dir) if dir.startswith(log_name)]
+        env = gym.wrappers.Monitor(env, "./videos/" + log_name + str(max(prev_runs) + 1), video_callable=checkpoints, force=True)
+        env.reset()
+
+        #model = DQN('CnnPolicy', env, exploration_final_eps=0.02, learning_rate=2e-4, batch_size=128, target_network_update_freq=1500, exploration_fraction=0.35, verbose=1, tensorboard_log=log_dir, filter=AllPassFilter(), grammar_on_exploration=True)
+
+        model = PPO2('CnnPolicy', env, tensorboard_log=log_dir, ent_coef=0.05, filter=GrammarFilter(history_size=30, negate_grammar=False, grammar_file="grammar.txt"))
+        #model = PPO2('CnnPolicy', env, tensorboard_log=log_dir, ent_coef=0.05, filter=AllPassFilter())
+        model.learn(total_timesteps=time_steps, tb_log_name=log_name)
+        env.close()
 

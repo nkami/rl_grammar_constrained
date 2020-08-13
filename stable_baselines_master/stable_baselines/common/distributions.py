@@ -78,6 +78,11 @@ class ProbabilityDistributionType(object):
     """
     Parametrized family of probability distributions
     """
+    #NKAM
+    def __init__(self, action_filter=None, n_actions=None):
+        self.action_filter = action_filter
+        self.n_actions = n_actions
+    #NKAM
 
     def probability_distribution_class(self):
         """
@@ -95,7 +100,22 @@ class ProbabilityDistributionType(object):
         :param flat: ([float]) the flat probabilities
         :return: (ProbabilityDistribution) the instance of the ProbabilityDistribution associated
         """
-        return self.probability_distribution_class()(flat)
+        #NKAM
+        
+        batch_size = tf.shape(flat)[0]
+        
+        if self.action_filter != None:
+            actions_mask = tf.py_func(func=self.action_filter, inp=[tf.constant(self.n_actions)], Tout=[tf.bool for _ in range(0, self.n_actions)])
+        else:
+            actions_mask = tf.constant([True for _ in range(0, self.n_actions)], dtype=tf.bool)
+        actions_mask = tf.reshape(tf.tile(actions_mask, [batch_size]), [batch_size, tf.shape(actions_mask)[0]])
+        zeros = tf.constant([-100.0 for _ in range(0, self.n_actions)])
+        #zeros = tf.constant([-float('inf') for _ in range(0, self.n_actions)])
+        zeros = tf.reshape(tf.tile(zeros, [batch_size]), [batch_size, tf.shape(zeros)[0]])
+        masked_flat = tf.where(actions_mask, flat, zeros)
+
+        #NKAM
+        return self.probability_distribution_class()(masked_flat)
 
     def proba_distribution_from_latent(self, pi_latent_vector, vf_latent_vector, init_scale=1.0, init_bias=0.0):
         """
@@ -155,12 +175,15 @@ class ProbabilityDistributionType(object):
 
 
 class CategoricalProbabilityDistributionType(ProbabilityDistributionType):
-    def __init__(self, n_cat):
+    #NKAM
+    def __init__(self, n_cat, action_filter=None):
         """
         The probability distribution type for categorical input
 
         :param n_cat: (int) the number of categories
         """
+        super(CategoricalProbabilityDistributionType, self).__init__(action_filter, n_cat)
+        #NKAM
         self.n_cat = n_cat
 
     def probability_distribution_class(self):
@@ -188,6 +211,8 @@ class MultiCategoricalProbabilityDistributionType(ProbabilityDistributionType):
 
         :param n_vec: ([int]) the vectors
         """
+        super(MultiCategoricalProbabilityDistributionType, self).__init__() #NKAM
+        
         # Cast the variable because tf does not allow uint32
         self.n_vec = n_vec.astype(np.int32)
         # Check that the cast was valid
@@ -221,6 +246,7 @@ class DiagGaussianProbabilityDistributionType(ProbabilityDistributionType):
 
         :param size: (int) the number of dimensions of the multivariate gaussian
         """
+        super(DiagGaussianProbabilityDistributionType, self).__init__() #NKAM
         self.size = size
 
     def probability_distribution_class(self):
@@ -259,6 +285,7 @@ class BernoulliProbabilityDistributionType(ProbabilityDistributionType):
 
         :param size: (int) the number of dimensions of the bernoulli distribution
         """
+        super(BernoulliProbabilityDistributionType, self).__init__() #NKAM
         self.size = size
 
     def probability_distribution_class(self):
@@ -476,7 +503,7 @@ class BernoulliProbabilityDistribution(ProbabilityDistribution):
         return cls(flat)
 
 
-def make_proba_dist_type(ac_space):
+def make_proba_dist_type(ac_space, action_filter=None): #NKAM
     """
     return an instance of ProbabilityDistributionType for the correct type of action space
 
@@ -487,7 +514,7 @@ def make_proba_dist_type(ac_space):
         assert len(ac_space.shape) == 1, "Error: the action space must be a vector"
         return DiagGaussianProbabilityDistributionType(ac_space.shape[0])
     elif isinstance(ac_space, spaces.Discrete):
-        return CategoricalProbabilityDistributionType(ac_space.n)
+        return CategoricalProbabilityDistributionType(ac_space.n, action_filter) #NKAM
     elif isinstance(ac_space, spaces.MultiDiscrete):
         return MultiCategoricalProbabilityDistributionType(ac_space.nvec)
     elif isinstance(ac_space, spaces.MultiBinary):
