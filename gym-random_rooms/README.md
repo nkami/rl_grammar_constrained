@@ -3,7 +3,7 @@ cd to folder gym-random_rooms and run:
 
 pip3 install -e .
 
-# Using:
+# How to use:
 ```
 import gym_random_rooms
 env = gym.make('random_rooms-v0', ...)
