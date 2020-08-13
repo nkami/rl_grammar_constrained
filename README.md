@@ -2,9 +2,9 @@
 In this repository we suggest an implementation for agent who uses Context Free Grammar rules in his learning process.
 We use the stable baselines implentations of DQN and PPO2 agents with the following small change:
 
-whenever the agent choose an action he cannot choose actions that will violate grammar rules.
+*Whenever the agent choose an action he cannot choose actions that will violate grammar rules.*
 
-We can use this approach to give the agent prior knowledge of temporal structures that solves the environemnt he is trying to learn.
+This approach can be used in order to give the agent prior knowledge of temporal structures that solves the environemnt he is trying to learn.
 
 
 # Files in the repository
