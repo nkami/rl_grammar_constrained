@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c8f5081c-937b-452f-8886-05a8f0d41f0e" name="Default Changelist" comment="bug fix in door_reward">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1WREpECoLCp8FqJ3ygHjNPv8vpG" />
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../cyk-prefix-parser" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c8f5081c-937b-452f-8886-05a8f0d41f0e" name="Default Changelist" comment="" />
+      <created>1569439984377</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569439984377</updated>
+      <workItem from="1569439985670" duration="1000" />
+      <workItem from="1579104189159" duration="13049000" />
+      <workItem from="1579692860573" duration="1556000" />
+      <workItem from="1582377931655" duration="43713000" />
+      <workItem from="1584819748003" duration="90000" />
+      <workItem from="1590324314771" duration="10967000" />
+      <workItem from="1590410789863" duration="22158000" />
+      <workItem from="1591886964960" duration="11523000" />
+      <workItem from="1591970394072" duration="27850000" />
+    </task>
+    <task id="LOCAL-00001" summary="render function + goal changing every reset">
+      <created>1590327377308</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1590327377308</updated>
+    </task>
+    <task id="LOCAL-00002" summary="doorkey environment">
+      <created>1590338879491</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1590338879491</updated>
+    </task>
+    <task id="LOCAL-00003" summary="default same goal and same key place&#10;reward for picking and opening">
+      <created>1590417224161</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1590417224161</updated>
+    </task>
+    <task id="LOCAL-00004" summary="reset every multiple resets + inner counter in state">
+      <created>1590941171499</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1590941171500</updated>
+    </task>
+    <task id="LOCAL-00005" summary="possible step reward">
+      <created>1591048089984</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1591048089985</updated>
+    </task>
+    <task id="LOCAL-00006" summary="multiple doors and keys env">
+      <created>1591988041974</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1591988041974</updated>
+    </task>
+    <task id="LOCAL-00007" summary="optional bundle_doors">
+      <created>1592163748625</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1592163748626</updated>
+    </task>
+    <task id="LOCAL-00008" summary="extension to multikeydoor env">
+      <created>1592431204683</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1592431204683</updated>
+    </task>
+    <task id="LOCAL-00009" summary="bug fix in key_reward">
+      <created>1592486794862</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1592486794862</updated>
+    </task>
+    <task id="LOCAL-00010" summary="bug fix in door_reward">
+      <created>1592506647004</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1592506647005</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="render function + goal changing every reset" />
+    <MESSAGE value="doorkey environment" />
+    <MESSAGE value="default same goal and same key place&#10;reward for picking and opening" />
+    <MESSAGE value="reset every multiple resets + inner counter in state" />
+    <MESSAGE value="possible step reward" />
+    <MESSAGE value="multiple doors and keys env" />
+    <MESSAGE value="optional bundle_doors" />
+    <MESSAGE value="extension to multikeydoor env" />
+    <MESSAGE value="bug fix in key_reward" />
+    <MESSAGE value="bug fix in door_reward" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fix in door_reward" />
+  </component>
+</project>

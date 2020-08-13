@@ -1,0 +1,1 @@
+from gym_random_rooms.envs.random_rooms_env import RandomRoomsEnv
