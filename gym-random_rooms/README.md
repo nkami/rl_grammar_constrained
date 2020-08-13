@@ -2,21 +2,22 @@
 cd to folder gym-random_rooms and run:
 pip3 install -e .
 
-# Using
+# Using:
+```
 import gym_random_rooms
 env = gym.make('random_rooms-v0', ...)
-
+```
 
 # About the Environment:
 
-In this environment the agent mission is:
-1. pick key or several keys
+## The agent's goal:
+1. pick a key or several keys
 2. open doors
 3. reach a goal cell (set in a fixed place at the bottom right cell of the board)
-
 In each episode intial state is changed 
 
-Parameters that can be set to the environment:
+
+## The parameters of the environment:
 1. cols – number of Cols in board
 2. rows – number of Rows in board
 3. doors_num – number of doors in environment
@@ -30,11 +31,12 @@ Parameters that can be set to the environment:
 11. key_reward – will give additional reward (for each pick)
 12. door_reward – will give additional reward (for opening all doors)
 
-We assume: keys*key_reward + door_reward < 1
 
+## Reward:
+We assume: keys*key_reward + door_reward < 1
 Max reward = 1 (for reaching goal cell)
 
-Action Space:
+## Action Space:
 0 – null
 1 – up
 2 – down
@@ -43,7 +45,7 @@ Action Space:
 5 – pick
 6, 7, 8, ... – toggle doors
 
-channels of the observation (each represented by numpy array in size of board):
+## channels of the observation (each represented by numpy array in size of board):
 1. state
 2. goal
 3. walls map
@@ -51,8 +53,8 @@ channels of the observation (each represented by numpy array in size of board):
 5. if bundle_doors: one channel for all doors, else: one for each door
 6. optional counter)
 
-Examples:
-Random Doors, No master key
+# Examples:
+## Random Doors, No master key
 
-Bundle Doors, With master key
+## Bundle Doors, With master key
 
