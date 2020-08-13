@@ -14,7 +14,7 @@ This approach can be used in order to give the agent prior knowledge of temporal
 4. action_filters.py - example filters of actions to be used as part of our algorithm (AllPassFilter, GrammarFilter)
 5. merge_runs.py - plotting mean and std of several runs from tensorboard logs (after interpolation)
 6. main.py - example main program to run
-7. grammar.txt, grammar_cnf.txt - grammar example file and the result of cfg2cnf on it.
+7. grammar.txt, grammar_cnf.txt - grammar example file and the result of cfg2cnf from it.
 
 # Requirements
 1. Tensorflow versions from 1.8.0 to 1.14.0
