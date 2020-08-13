@@ -43,7 +43,7 @@ if __name__ == '__main__':
     env = gym.make(env_id)
 
     log_dir = "./log/"
-    log_name = "DoorKey_GrammarHistory30_PPO2"
+    log_name = "env_id_GrammarHistory30_PPO2"
 	env.reset()
 
 	model = PPO2('CnnPolicy', env, tensorboard_log=log_dir, filter=GrammarFilter(history_size=30, negate_grammar=False, grammar_file="grammar.txt"))
