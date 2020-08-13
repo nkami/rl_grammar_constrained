@@ -1,5 +1,6 @@
 # Installing:
 cd to folder gym-random_rooms and run:
+
 pip3 install -e .
 
 # Using:
@@ -34,6 +35,7 @@ In each episode intial state is changed
 
 ## Reward:
 We assume: keys*key_reward + door_reward < 1
+
 Max reward = 1 (for reaching goal cell)
 
 ## Action Space:
