@@ -1,4 +1,4 @@
-# rl_grammar_constrained
+# RL Grammar Constrained
 In this repository we suggest an implementation for agent uses Context Free Grammar rules in his learning process.
 We use the stable baselines implentations of DQN and PPO2 agents with the following small change:
 
