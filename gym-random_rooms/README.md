@@ -40,11 +40,17 @@ Max reward = 1 (for reaching goal cell)
 
 ## Action Space:
 0 – null
+
 1 – up
+
 2 – down
+
 3 – left
+
 4 – right
+
 5 – pick
+
 6, 7, 8, ... – toggle doors
 
 ## channels of the observation (each represented by numpy array in size of board):
