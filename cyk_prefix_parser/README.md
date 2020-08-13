@@ -64,7 +64,7 @@ astronomers  saw           stars   with    ears
 
 ```
 Terminals:
-all terminal symbpls
+all terminal symbols
 Variables:
 all non-terminal symbols
 Productions:
