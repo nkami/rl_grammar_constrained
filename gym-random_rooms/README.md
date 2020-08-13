@@ -63,6 +63,6 @@ Max reward = 1 (for reaching goal cell)
 
 # Examples:
 ## Random Doors, No master key
-
+img/random_doors_nomk.png
 ## Bundle Doors, With master key
-
+img/bundle_doors_mk.png
