@@ -65,15 +65,12 @@ python merge_runs.py log res
 
 # Results
 These are the results of PPO2 and DQN algorithms on the Random Rooms environment:
-
-![](https://github.com/nkami/rl_grammar_constrained/results/dqn_res.png)
-
-![](https://github.com/nkami/rl_grammar_constrained/results/ppo_res.png)
+DQN            |  PPO2
+:-------------------------:|:-------------------------:
+![](results/dqn_res.png)  |  ![](results/ppo_res.png)
 
 With both algorithms we can see a significant improvement in performance when grammar constraints are used.
 
-Regular PPO2 and Grammar PPO2 after training 1900 episodes:
+Grammar PPO2 and regular PPO2 after training 1900 episodes respectively:
 
-![](https://github.com/nkami/rl_grammar_constrained/results/ppo2_grammar_1900eps.gif)
-
-![](https://github.com/nkami/rl_grammar_constrained/results/ppo2_1900eps.gif)
+![](results/ppo2_grammar_1900eps.gif) ![](results/ppo2_1900eps.gif)
