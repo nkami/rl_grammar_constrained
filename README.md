@@ -1,10 +1,10 @@
 # RL Grammar Constrained
 In this repository we suggest an implementation for agent who uses Context Free Grammar rules in his learning process.
-We use the stable baselines implentations of DQN and PPO2 agents with the following small change:
+We use the stable baselines implementations of DQN and PPO2 agents with the following small change:
 
 *Whenever the agent choose an action he cannot choose actions that will violate grammar rules.*
 
-This approach can be used in order to give the agent prior knowledge of temporal structures that solves the environemnt he is trying to learn.
+This approach can be used in order to give the agent prior knowledge of temporal structures that solves the environment he is trying to learn.
 
 
 # Files in the repository
@@ -18,10 +18,10 @@ This approach can be used in order to give the agent prior knowledge of temporal
 
 # Requirements
 1. Tensorflow versions from 1.8.0 to 1.14.0
-2. python3 (>=3.5)
+2. Python3 (>=3.5)
 
 # Example
-1. create the grammar file according to rules defined on cyk_prefix_parser folder - grammar.txt
+1. Create the grammar file according to rules defined on cyk_prefix_parser folder - grammar.txt
 	this file will be used to define the patterns agent *must* follow
 
 2. Install stable_baselines_master folder:
@@ -29,7 +29,7 @@ This approach can be used in order to give the agent prior knowledge of temporal
 pip install -e stable_baselines_master
 ```
 
-3. run the following main code:
+3. Run the following main code:
 ```
 import os
 import matplotlib.pyplot as plt
@@ -51,17 +51,24 @@ if __name__ == '__main__':
 	model.learn(total_timesteps=time_steps, tb_log_name=log_name)
 	env.close()
 ```
-4. merge multiple runs with the same log_name:
+4. Merge multiple results of different runs with the same log_name:
 ```
 python merge_runs.py log res
 ```
+5. res.png is the average plot of each run type.
 
-5. result plot will be in file res.png
-
-# Hyperparameters
-1. the original stable baselines DQN or PPO2 hyperparameters.
-2. history_size - the horizon of actions history that the grammar is checked against. History buffer cleaned whenever the episode ends or the size of it pass history_size. 
-3. negate_grammar - If False the grammar defines what pattern should agent use, if True the grammar defines what the agent shouldn't do.
-4. grammar_on_exploration (for DQN only) - if True grammar rules will define the exploration actions also. 
+# Hyper-parameters
+1. the original stable baselines DQN or PPO2 hyper-parameters.
+2. history_size - The horizon of actions history that the grammar is checked against. History buffer emptied whenever the episode ends or its size surpasses history_size. 
+3. negate_grammar - If False the grammar defines what pattern the agent should do, if True the grammar defines what the agent shouldn't do.
+4. grammar_on_exploration (for DQN only) - if True the grammar rules will apply to exploration actions as well. 
 
 # Results
+These are the results of PPO2 and DQN algorithms on the Random Rooms environment:
+![dqn graph](https://github.com/nkami/rl_grammar_constrained/blob/master/results/dqn_res.PNG)
+![ppo graph](https://github.com/nkami/rl_grammar_constrained/blob/master/results/ppo_res.PNG)
+With both algorithms we can see a significant improvement in performance when grammar constraints are used.
+
+Regular PPO2 and Grammar PPO2 after 1900 episodes:
+![ppo 1900 eps grammar](https://github.com/nkami/rl_grammar_constrained/blob/master/results/ppo2_grammar_1900eps.GIF)
+![ppo 1900 eps](https://github.com/nkami/rl_grammar_constrained/blob/master/results/ppo2_1900eps.GIF)
