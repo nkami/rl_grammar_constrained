@@ -59,7 +59,7 @@ Max reward = 1 (for reaching goal cell)
 3. walls map
 4. one for each key
 5. if bundle_doors: one channel for all doors, else: one for each door
-6. optional counter)
+(6. optional counter)
 
 # Examples:
 ## Random Doors, No master key
