@@ -39,19 +39,18 @@ We assume: keys*key_reward + door_reward < 1
 Max reward = 1 (for reaching goal cell)
 
 ## Action Space:
-0 – null
 
-1 – up
+0 – up
 
-2 – down
+1 – down
 
-3 – left
+2 – left
 
-4 – right
+3 – right
 
-5 – pick
+4 – pick
 
-6, 7, 8, ... – toggle doors
+5, 6, 7, ... – toggle doors
 
 ## channels of the observation (each represented by numpy array in size of board):
 1. state
