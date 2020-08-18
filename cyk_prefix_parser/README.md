@@ -1,6 +1,8 @@
 This is a CYK Prefix Parser implemented in Python 3.
 
-Based on a basic CYK parser from https://github.com/ikergarcia1996/Basic-CYK-Parser.git - by ikergarcia1996, Iker García Ferrero  CFG to CNF is based on https://github.com/adelmassimo/CFG2CNF.git - by adelmassimo
+Based on a basic CYK parser from https://github.com/ikergarcia1996/Basic-CYK-Parser.git - by ikergarcia1996, Iker García Ferrero
+
+CFG to CNF is based on https://github.com/adelmassimo/CFG2CNF.git - by adelmassimo
 
 # Files in the repository
 1. cfg2cnf.py: CFG to CNF converter in .py format
